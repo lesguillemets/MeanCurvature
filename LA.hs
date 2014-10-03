@@ -1,3 +1,5 @@
+module LA(Point(Point), Circle(Circle), Line(Line), describingCircle) where
+
 import Data.Maybe
 
 -- A line ax + by = c
@@ -12,14 +14,14 @@ data Point = Point Float Float deriving (Show, Eq)
 data Circle = Circle Point Float deriving (Show, Eq)
 
 -- Calculates the middle of two points
-middle_of :: Point -> Point -> Point
-middle_of (Point x1 y1) (Point x2 y2) = (Point newX newY)
+middleOf :: Point -> Point -> Point
+middleOf (Point x1 y1) (Point x2 y2) = Point newX newY
   where newX = (x1 + x2)/2
         newY = (y1 + y2)/2
 
 -- Get a line through two points
-line_from_to :: Point -> Point -> Maybe Line
-line_from_to p1 p2 =
+lineFromTo :: Point -> Point -> Maybe Line
+lineFromTo p1 p2 =
   if p1 == p2
      then Nothing
      else Just (Line a b c)
@@ -40,8 +42,8 @@ intersect (Line a b s) (Line c d t) =
              y = (-c*s + a*t)/det
 
 -- Get a orthogonal line
-orthogonal_to_through :: Line -> Point -> Line
-orthogonal_to_through (Line a b _) (Point x y) = (Line s t u)
+orthogonalToThrough :: Line -> Point -> Line
+orthogonalToThrough (Line a b _) (Point x y) = Line s t u
   where s = (-1.0) * b
         t = a
         u = s*x + t*y
@@ -54,21 +56,21 @@ distance (Point x1 y1) (Point x2 y2) =
           y = y2 - y1
 
 -- Get a circle through 3 Points
-describing_circle :: Point -> Point -> Point -> Maybe Circle
-describing_circle p1 p2 p3 =
+describingCircle :: Point -> Point -> Point -> Maybe Circle
+describingCircle p1 p2 p3 =
   case intersection of
        Nothing -> Nothing
        Just center -> case radius of
                       Nothing -> Nothing
                       Just d -> Just (Circle center d)
-    where p1p2 = line_from_to p1 p2
-          p2p3 = line_from_to p2 p3
-          q1 = middle_of p1 p2
-          q2 = middle_of p2 p3
-          line1 = maybe Nothing (Just . (((flip orthogonal_to_through) q1))) p1p2
-          line2 = maybe Nothing (Just . (((flip orthogonal_to_through) q2))) p2p3
-          helper = maybe Nothing (Just . intersect) line1
+    where p1p2 = lineFromTo p1 p2
+          p2p3 = lineFromTo p2 p3
+          q1 = middleOf p1 p2
+          q2 = middleOf p2 p3
+          line1 = fmap (`orthogonalToThrough` q1) p1p2
+          line2 = fmap (`orthogonalToThrough` q2) p2p3
+          helper = fmap intersect line1
           intersection = case helper of
                               Nothing -> Nothing
                               Just f -> maybe Nothing f line2
-          radius = maybe Nothing (Just . (distance p1)) intersection
+          radius = fmap (distance p1) intersection
