@@ -1,5 +1,7 @@
 import Graphics.UI.GLUT
 
+import MeanCurvature
+
 main = do
     (_progName, _args) <- getArgsAndInitialize
     _window <- createWindow "Curvature"

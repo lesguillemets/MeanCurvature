@@ -1,6 +1,6 @@
 module LA(Point(Point), Circle(Circle), Line(Line), describingCircle) where
 
-import Data.Maybe
+import Data.Maybe()
 
 -- A line ax + by = c
 -- Note that an equivalence relation would need
