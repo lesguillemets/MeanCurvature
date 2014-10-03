@@ -1,4 +1,4 @@
-module MeanCurvature where
+module MeanCurvature(Curve(Curve), step) where
 
 import Data.Maybe()
 import LA
@@ -16,7 +16,7 @@ move point circle =
              newY = y + (b - y)*factor
              in Point newX newY
     where (Point x y) = point
-          speed = 0.01
+          speed = 0.0001
           time = 1.0
 
 

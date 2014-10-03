@@ -1,17 +1,18 @@
-module LA(Point(Point), Circle(Circle), Line(Line), describingCircle) where
+module LA(Point(Point), Circle(Circle), describingCircle) where
 
 import Data.Maybe()
+import Graphics.UI.GLUT(GLfloat)
 
 -- A line ax + by = c
 -- Note that an equivalence relation would need
 -- a normalizing of lines
-data Line = Line Float Float Float deriving (Show)
+data Line = Line GLfloat GLfloat GLfloat deriving (Show)
 
 -- A Point
-data Point = Point Float Float deriving (Show, Eq)
+data Point = Point GLfloat GLfloat deriving (Show, Eq)
 
 -- A Circle p, radius
-data Circle = Circle Point Float deriving (Show, Eq)
+data Circle = Circle Point GLfloat deriving (Show, Eq)
 
 -- Calculates the middle of two points
 middleOf :: Point -> Point -> Point
@@ -52,8 +53,8 @@ orthogonalToThrough (Line a b _) (Point x y) = Line s t u
 distance :: Point -> Point -> Float
 distance (Point x1 y1) (Point x2 y2) =
   sqrt(x*x + y*y)
-    where x = x2 - x1
-          y = y2 - y1
+    where x = realToFrac (x2 - x1)
+          y = realToFrac (y2 - y1)
 
 -- Get a circle through 3 Points
 describingCircle :: Point -> Point -> Point -> Maybe Circle
@@ -62,7 +63,7 @@ describingCircle p1 p2 p3 =
        Nothing -> Nothing
        Just center -> case radius of
                       Nothing -> Nothing
-                      Just d -> Just (Circle center d)
+                      Just d -> Just (Circle center (realToFrac d))
     where p1p2 = lineFromTo p1 p2
           p2p3 = lineFromTo p2 p3
           q1 = middleOf p1 p2
